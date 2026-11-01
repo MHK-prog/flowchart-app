@@ -6,16 +6,21 @@
   <title>Flowchart Studio</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1e1e1e">
+  <meta name="theme-color" content="#111827">
   <script src="mermaid.min.js"></script>
 </head>
 <body>
 
   <header>
-    <h1>Flowchart Studio (PWA)</h1>
+    <h1>Flowchart Studio</h1>
     <div class="actions">
+      <!-- دکمه وارد کردن فایل SVG -->
+      <label for="import-file" title="Import SVG File">
+        Import
+        <input type="file" id="import-file" accept=".svg,.txt" style="display: none;">
+      </label>
       <button id="btn-export-svg">Export SVG</button>
-      <button id="btn-install" style="display: none;">Install App</button>
+      <button id="btn-install" style="display: none;">Install</button>
     </div>
   </header>
 

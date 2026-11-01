@@ -1,13 +1,11 @@
-// ۱. ثبت سرویس ورکر برای آفلاین شدن
+// ۱. ثبت سرویس ورکر برای آفلاین
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log('Service Worker Active'))
-      .catch((err) => console.error('SW Error:', err));
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
   });
 }
 
-// ۲. تنظیم اولیه Mermaid
+// ۲. تنظیمات Mermaid
 mermaid.initialize({
   startOnLoad: false,
   theme: 'dark',
@@ -18,10 +16,10 @@ const codeInput = document.getElementById('code-input');
 const output = document.getElementById('output');
 const btnExportSvg = document.getElementById('btn-export-svg');
 const btnInstall = document.getElementById('btn-install');
+const importFile = document.getElementById('import-file');
 
 let renderTimeout = null;
 
-// ۳. رندر کردن بهینه دیاگرام
 async function renderDiagram() {
   const code = codeInput.value.trim();
   if (!code) {
@@ -33,17 +31,16 @@ async function renderDiagram() {
     const { svg } = await mermaid.render('mermaid-svg-' + Date.now(), code);
     output.innerHTML = svg;
   } catch (error) {
-    // خطاها بی‌سرصدا مدیریت میشن تا برنامه کرش نکنه
+    // خطاها فریز نمی‌شوند
   }
 }
 
-// ۴. تکنیک Debounce برای اینکه موقع تایپ CPU داغ نکنه
 codeInput.addEventListener('input', () => {
   clearTimeout(renderTimeout);
   renderTimeout = setTimeout(renderDiagram, 300);
 });
 
-// ۵. دانلود خروجی SVG با یک کلیک
+// ۳. خروجی SVG
 btnExportSvg.addEventListener('click', () => {
   const svgElement = output.querySelector('svg');
   if (!svgElement) return;
@@ -61,12 +58,39 @@ btnExportSvg.addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
-// ۶. رویداد دکمه نصب PWA در ویندوز
+// ۴. امکان ایمپورت فایل (خواندن متن یا تگ‌های کد درون SVG)
+importFile.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    let content = event.target.result;
+    
+    // اگر فایل SVG بود، تلاش می‌کنیم تگ کدهای ذخیره شده را پیدا کنیم
+    if (file.name.endsWith('.svg')) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, 'image/svg+xml');
+      // چک کردن تگ‌های رایج ذخیره‌سازی متون
+      const descTag = doc.querySelector('desc');
+      if (descTag) {
+        content = descTag.textContent;
+      }
+    }
+    
+    codeInput.value = content;
+    renderDiagram();
+  };
+  reader.readAsText(file);
+  importFile.value = ''; // ریست کردن اینپوت
+});
+
+// ۵. مدیریت نصب PWA
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  btnInstall.style.display = 'inline-block';
+  btnInstall.style.display = 'inline-flex';
 });
 
 btnInstall.addEventListener('click', async () => {
@@ -80,5 +104,4 @@ btnInstall.addEventListener('click', async () => {
   }
 });
 
-// رندر بار اول
 renderDiagram();
