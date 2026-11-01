@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flowchart Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e1e1e">
+  <script src="mermaid.min.js"></script>
+</head>
+<body>
+
+  <header>
+    <h1>Flowchart Studio (PWA)</h1>
+    <div class="actions">
+      <button id="btn-export-svg">Export SVG</button>
+      <button id="btn-install" style="display: none;">Install App</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="editor-pane">
+      <textarea id="code-input" spellcheck="false">flowchart TD
+    Start[User Request] --> Auth{Is Authenticated?}
+    Auth -- Yes --> Panel[Dashboard Area]
+    Auth -- No --> Login[Login Page]
+    Login --> Submit[Verify Credentials]
+    Submit --> Auth</textarea>
+    </div>
+
+    <div class="preview-pane">
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

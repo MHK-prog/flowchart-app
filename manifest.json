@@ -1,0 +1,19 @@
+{
+  "name": "Flowchart Studio",
+  "short_name": "Flowchart",
+  "description": "Ultra-lightweight offline Mermaid flowchart editor",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#1e1e1e",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
